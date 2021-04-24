@@ -4,7 +4,7 @@
 ## Ön Gereksinimler
 * Vagrant
 
-##Not:
+### Not:
 Windows Kullanıcılarında Kodların Düzgün Bir Şekilde Çalışabilmesi için aşağıdaki konfigrasyonun yapılması gerekmektedir (Mac Os ve Linux sistemlerde deneme şansım olmadı :))
 $ git config --global core.autocrlf false
 
