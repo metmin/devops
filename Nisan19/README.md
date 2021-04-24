@@ -60,4 +60,4 @@ $ ansible-playbook -i hosts playbooks/case2.yml
 * Docker Kurulumu yapılır ve vagrant kullanıcısı docker grubuna eklenir.
 * Docker servisi başlatılır ve sunucu yeniden boot edildiğinde açık olması için enable edilir.
 * Sonrasında Docker-Compose Kurulumu yapılır.
-* En sonunda Docker-Compose kullanılarak hazırlanan Flask-Docker-Nginx projesi ayağa kaldırılır.
+* En sonunda Docker-Compose kullanılarak hazırlanan Flask-MongoDB-Nginx projesi ayağa kaldırılır.
