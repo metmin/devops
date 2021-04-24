@@ -1,0 +1,49 @@
+---
+
+- name: Update Packages And Add User
+  hosts: case1
+  become: true
+
+  tasks:
+  - name: Update all Packages
+    yum:
+      name: '*'
+      state: latest
+   
+  - name: Make sure we have a 'wheel' group
+    group:
+      name: wheel
+      state: present
+
+  - name: Allow 'wheel' group to have passwordless sudo
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^%wheel'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+
+  - name: Add new user with wheel group
+    user: 
+      name: mehmeteminbora 
+      groups: wheel 
+      append: yes 
+      state: present 
+      createhome: yes
+
+  - name: Ensure ansible user accepts the SSH key 
+    authorized_key: 
+      user: mehmeteminbora 
+      key: "{{ lookup('file', '/vagrant/control.pub') }}"
+      state: present
+
+
+# Switch User To mehmeteminbora
+- name: 
+  hosts: case1
+  become: true
+  become_user: mehmeteminbora
+  
+  tasks:
+  - name: Run Commands From Shell Script
+    script: /vagrant/ansible/case1_operations_with_user.sh

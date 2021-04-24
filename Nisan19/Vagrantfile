@@ -1,0 +1,52 @@
+Vagrant.configure(2) do |config|
+  config.vm.define "control", primary: true do |h|
+    h.vm.box = "ubuntu/focal64"
+    h.vm.hostname =  "control"
+    h.vm.network "private_network", ip: "192.168.135.10"
+    h.vm.network "forwarded_port", guest: 22, host: "2200", id: "ssh"
+    h.vm.provision :shell, inline: "echo 'export ANSIBLE_CONFIG=/vagrant/ansible/ansible.cfg' >> /home/vagrant/.bash_profile"
+    h.vm.provision "shell" do |provision|
+      provision.path = "provision_ansible.sh"
+    end 
+    h.vm.provision :shell, :inline => <<'EOF'
+	if [ ! -f "/home/vagrant/.ssh/id_rsa" ]; then
+  ssh-keygen -t rsa -N "" -f /home/vagrant/.ssh/id_rsa
+fi
+cp /home/vagrant/.ssh/id_rsa.pub /vagrant/control.pub
+cat << 'SSHEOF' > /home/vagrant/.ssh/config
+Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+SSHEOF
+chown -R vagrant:vagrant /home/vagrant/.ssh/
+EOF
+  end
+
+  config.vm.define "case1" do |h|
+    h.vm.box = "centos/7"
+    h.vm.hostname = "case1"
+    h.vm.network "private_network", ip: "192.168.135.111"
+    h.vm.network "forwarded_port", guest: 22, host: "2201", id: "ssh"
+    h.vm.provision :shell, inline: 'cat /vagrant/control.pub >> /home/vagrant/.ssh/authorized_keys'
+    h.vm.provision :shell, inline: 'test -e /usr/bin/python3 || (yum install -y python3)'
+  
+    file_to_disk = './tmp/deneme.vdi'
+    h.vm.provider :virtualbox do |vb|
+      unless FileTest.exist?(file_to_disk)
+        vb.customize ['createhd', '--filename', file_to_disk, '--size', 11 * 1024]
+      end
+      vb.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk]
+    end
+
+  end
+
+  config.vm.define "case2" do |h|
+    h.vm.box = "centos/7"
+    h.vm.hostname = "case2"
+    h.vm.network "private_network", ip: "192.168.135.112"
+    h.vm.network "forwarded_port", guest: 22, host: "2202", id: "ssh"
+    h.vm.provision :shell, inline: 'cat /vagrant/control.pub >> /home/vagrant/.ssh/authorized_keys'
+    h.vm.provision :shell, inline: 'test -e /usr/bin/python3 || (yum install -y python3 ; pip3 install --upgrade pip)'
+  end
+
+end

@@ -1,0 +1,90 @@
+---
+- name: Install docker
+  gather_facts: No
+  become: yes
+  hosts: case2
+
+  tasks:
+    - name: Install Required Packages
+      yum:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2
+
+    - name: Add Docker repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docer-ce.repo
+
+    - name: Enable Docker Edge repo
+      ini_file:
+        dest: /etc/yum.repos.d/docer-ce.repo
+        section: "docker-ce-edge"
+        option: enabled
+        value: 0
+
+    - name: Enable Docker Test repo
+      ini_file:
+        dest: /etc/yum.repos.d/docer-ce.repo
+        section: "docker-ce-test"
+        option: enabled
+        value: 0
+
+    - name: Install Docker
+      package:
+        name: docker-ce
+        state: latest
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add user vagrant to docker group
+      user:
+        name: vagrant
+        groups: docker
+        append: yes
+
+- name: Install Docker Compose
+  gather_facts: No
+  become: yes
+  hosts: case2
+
+  tasks:
+    - name: Check current docker-compose version.
+      command: /usr/local/bin/docker-compose --version
+      register: docker_compose_current_version
+      changed_when: false
+      failed_when: false
+
+    - name: Delete existing docker-compose version if it's different.
+      file:
+        path: /usr/local/bin/docker-compose
+        state: absent
+      when: >
+        docker_compose_current_version.stdout is defined
+        and "1.26.0" not in docker_compose_current_version.stdout
+
+    - name: Install Docker Compose (if configured).
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.26.0/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: 0755
+      when: >
+        docker_compose_current_version.stdout is not defined
+        or "1.26.0" not in docker_compose_current_version.stdout
+    
+    - name: Use docker-compose with root
+      command: ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+      when: >
+        docker_compose_current_version.stdout is not defined
+        or "1.26.0" not in docker_compose_current_version.stdout 
+
+    - name: Docker-Compose Up (Down if its already up)
+      script: /vagrant/ansible/case2_docker_compose.sh
