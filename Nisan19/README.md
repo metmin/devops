@@ -1,7 +1,7 @@
 # TrendyolSystem Bootcamp Mezuniyet Projesi 1
 
 
-## Ön Gereksinimler
+### Ön Gereksinimler
 * Vagrant
 
 ### Not:
