@@ -21,80 +21,40 @@ $ git config --global core.autocrlf false
 
 
 ### Case 1
-
-
+* Sanallaştırma için VirtualBox kullanmıyorsanız sunucular ayağa kalktıktan sonra elle disk eklememiz gerekmekte.
 
 * `/vagrant/ansible` dizinine geldikten sonra aşağıdaki komutu çalıştıralım:
 ```
 $ ansible-playbook -i hosts playbooks/case1.yml
 ```
 
+#### Case 1 Aşamaları
+* Bu komut ile beraber Ansible, öncelikle sunucudaki güncellemeleri yapar.
+* Sonrasında mehmeteminbora kullanıcısı açılıp wheel grubuna bağlanmakta ve sonraki işlemleri mehmeteminbora kullanıcı ile gerçekleştirmektedir.
+* Kullanıcı açıldıktan sonra sunucuya bağladığımız diske partition yapıp /mnt/bootcamp dizinine mount eder.
+* Sonrasında /opt/bootcamp dizinine bootcamp.txt dosyası açarak içerisine gerekli yazıyı yazar.
+* En sonunda da home dizinine geçerek açtığımız dosyayı bulup mount ettiğimiz konuma gönderir. 
 
 ### Case 2
 
-Ping all of the hosts:
+* `/vagrant/ansible` dizinine geldikten sonra aşağıdaki komutu çalıştıralım:
 ```
-$ ansible -m ping all
-```
-
-Run `hostname` command on target hosts:
-```
-$ ansible -m command -a "hostname" all
+$ ansible-playbook -i hosts playbooks/case2.yml
 ```
 
-Run `hostname` command on target hosts(here we are not passing module, `command` module is the default one):
-```
-$ ansible -a "hostname" all
-```
+* Ansible işlemleri tamamladıktan sonra `192.168.135.112` adresi üzerinden yayın başlayacaktır.
 
-### Playbook Examples
+* `192.168.135.112/user?name=<name>&lastname=<lastname>` ile beraber çağrı atılırsa isim ve soyisim bilgileri veritabanına kaydedilir.
 
-Simple playbook that executes "hostname" command:
-```shell
-$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml
-```
+* `192.168.135.112/users` ile beraber çağrı atılırsa veritabanına kaydedilen tüm isim-soyisim bilgilerini ekrana yazdıracaktır.
 
-Show what hosts are involved in this playbook:
-```
-$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml --list-hosts
-```
+* `bootcamp=devops` headeri ile beraber çağrı atıldığında `Hoşgeldin Devops` statik sayfasına yönlendirme yapılacaktır.
 
-Show what tags are involved in this playbook:
-```
-$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml --list-tags
-```
 
-Run only steps in a playbook that have a tag called "packages" defined:
-```shell
-$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --tags "packages"
-```
+#### Case 2 Aşamaları
 
-Run only steps in a playbook that DON'T have a tag called "packages" defined:
-```
-$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --skip-tags "packages"
-```
-
-Step through tasks and be prompted whether to run each step or not:
-```
-$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --step
-```
-
-Show all tasks that will be executed by the playbook:
-```
-$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --list-tasks
-```
-
-Skip over steps in a playbook and start at a specific task:
-```
-$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/stack_status.yml --start-at-task "verify end-to-end response"
-```
-
-Verify syntax:
-```
-$ ansible-playbook --syntax-check /vagrant/ansible/playbooks/site.yml
-```
-
-Do a simulated run of the playbook:
-```
-$ ansible-playbook --check -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml
-```
+* Bu komut ile beraber Ansible, docker kurulumu için gerekli paketler yüklenir ve docker reposu sisteme eklenir.
+* Docker Kurulumu yapılır ve vagrant kullanıcısı docker grubuna eklenir.
+* Docker servisi başlatılır ve sunucu yeniden boot edildiğinde açık olması için enable edilir.
+* Sonrasında Docker-Compose Kurulumu yapılır.
+* En sonunda Docker-Compose kullanılarak hazırlanan Flask-Docker-Nginx projesi ayağa kaldırılır.
