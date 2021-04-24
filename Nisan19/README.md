@@ -1,47 +1,23 @@
-# Vagrant Ansible Lab
-
-The lab will implement the following configuration:
-
--
-| Machine  Name | Role          | Network Configuration                  | OS                         |
-|---------------|---------------|----------------------------------------|----------------------------|
-| control       | Ansible  host | private_network, ip: 192.168.135.10    | Ubuntu Focal64 (20 LTS)   |
-| app01         | web server 1  | private_network, ip: 192.168.135.111   | Ubuntu Focal64 (20 LTS)   |
-| app02         | web server 2  | private_network, ip: 192.168.135.112   | Centos 7   |
+# TrendyolSystem Bootcamp Mezuniyet Projesi 1
 
 
-## Prerequisites
-* Install the Vagrant 2.2.15 from https://www.vagrantup.com/downloads
-* Install the Virtualbox 6.1.18 from https://www.virtualbox.org/wiki/Downloads if it is not installed already.
-* Download the Vagrant boxes for your preferred hypervisor:
-  ```
-  $ vagrant box add centos/7
-  $ vagrant box add ubuntu/focal64
-  ```
+## Ön Gereksinimler
+* Vagrant
 
-## Quick Start
-* Clone this repo
-* Ensure you have installed Vagrant and Virtualbox(check `Prerequisites` section)
-* Run `vagrant up` from the root of the cloned repo (the folder with Vagrantfile in it)
-* Once the VMs are built, type `vagrant ssh control` to login to the ansible controller from within your vagrant project folder.
-* Change directories `cd /vagrant/ansible` which is the ansible subfolder of your vagrant project for this lab (the vagrant project folder is mounted within the VMs as /vagrant during provisioning)
+##Not:
+Windows Kullanıcılarında Kodların Düzgün Bir Şekilde Çalışabilmesi için aşağıdaki konfigrasyonun yapılması gerekmektedir (Mac Os ve Linux sistemlerde deneme şansım olmadı :))
+$ git config --global core.autocrlf false
 
-## Important Files
-* [./hosts](ansible/hosts): File defining the servers to be managed
-* [./ansible.cfg](ansible/ansible.cfg): Ansible supports several sources for configuring its behavior, including an ini file named [ansible.cfg](ansible.cfg), environment variables, command-line options, playbook keywords, and variables. Changes can be made and used in a configuration file which will be searched for in the following order(Ansible will process the below list and use the first file found, all others are ignored.):
-  - `ANSIBLE_CONFIG` (environment variable if set)
-  - `ansible.cfg` (in the current directory)
-  - `~/.ansible.cfg` (in the home directory)
-  - `/etc/ansible/ansible.cfg`
-* [./group_vars/all/main.yml](ansible/group_vars/all/main.yml): Global variables file for all of the host groups
-* [./group_vars/nginx/main.yml](ansible/group_vars/nginx/main.yml): Global variables file for `nginx` host group
-* [./group_vars/prometheus/main.yml](ansible/group_vars/prometheus/main.yml): Global variables file for `prometheus` host group
-* [./playbooks](ansible/playbooks): Playbook folder for Ansible lab
-* [./roles](ansible/roles): Role folder for Ansible lab
 
-## Examples
+## Başlangıç
+* Öncelikle Projeyi Klonlayalım
+* `vagrant up` komutu ile makinelerimizi ayağa kaldıralım.
+* Sanallaştırma için VirtualBox kullanılırsa Vagrant otomatik olarak ilk case de diski bağlayacaktır.
+* Kurulum bittikten sonra `vagrant ssh control` komutu ile ansible kullanacağımız makineye girelim.
+* `cd /vagrant/ansible` komutu ile beraber ansible kodlarımızın olduğu dizine gelelim.
 
-### Working With Inventory
+
+### Case 1
 
 List all hosts:
 ```
@@ -74,7 +50,7 @@ List hosts not in control group:
 $ ansible --list-hosts \!control
 ```
 
-### Adhoc Command Examples
+### Case 2
 
 Ping all of the hosts:
 ```
