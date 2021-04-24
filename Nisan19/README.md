@@ -4,11 +4,13 @@
 ### Ön Gereksinimler
 * Vagrant
 
+
 ### Not:
 * Windows Kullanıcılarında Kodların Düzgün Bir Şekilde Çalışabilmesi için aşağıdaki konfigrasyonun yapılması gerekmektedir (Mac Os ve Linux sistemlerde deneme şansım olmadı :))
 ```
 $ git config --global core.autocrlf false
 ```
+
 
 ## Başlangıç
 * Öncelikle Projeyi Klonlayalım
@@ -20,36 +22,13 @@ $ git config --global core.autocrlf false
 
 ### Case 1
 
-List all hosts:
+
+
+* `/vagrant/ansible` dizinine geldikten sonra aşağıdaki komutu çalıştıralım:
 ```
-$ ansible --list-hosts all
-$ ansible --list-hosts "*"
+$ ansible-playbook -i hosts playbooks/case1.yml
 ```
 
-List hosts from specific group:
-```
-$ ansible --list-hosts loadbalancer
-```
-
-List hosts using wildcard filter
-```
-$ ansible --list-hosts "app*"
-```
-
-List hosts from multiple groups
-```
-$ ansible --list-hosts database,control
-```
-
-List first node in webserver group:
-```
-$ ansible --list-hosts webserver[0]
-```
-
-List hosts not in control group:
-```
-$ ansible --list-hosts \!control
-```
 
 ### Case 2
 
