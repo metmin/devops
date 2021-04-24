@@ -23,10 +23,12 @@ $ git config --global core.autocrlf false
 ### Case 1
 * Sanallaştırma için VirtualBox kullanmıyorsanız sunucular ayağa kalktıktan sonra elle disk eklememiz gerekmekte.
 
-* `/vagrant/ansible` dizinine geldikten sonra aşağıdaki komutu çalıştıralım:
+* Control Makinesinde `/vagrant/ansible` dizinine geldikten sonra aşağıdaki komutu çalıştıralım:
 ```
 $ ansible-playbook -i hosts playbooks/case1.yml
 ```
+
+* Localimizde `vagrant ssh case1` komutunu çalıştırarak sunucuya bağlanabilir ve değişiklikleri görebiliriz.
 
 #### Case 1 Aşamaları
 * Bu komut ile beraber Ansible, öncelikle sunucudaki güncellemeleri yapar.
@@ -37,7 +39,7 @@ $ ansible-playbook -i hosts playbooks/case1.yml
 
 ### Case 2
 
-* `/vagrant/ansible` dizinine geldikten sonra aşağıdaki komutu çalıştıralım:
+* Control Makinesinde `/vagrant/ansible` dizinine geldikten sonra aşağıdaki komutu çalıştıralım:
 ```
 $ ansible-playbook -i hosts playbooks/case2.yml
 ```
@@ -50,6 +52,7 @@ $ ansible-playbook -i hosts playbooks/case2.yml
 
 * `bootcamp=devops` headeri ile beraber çağrı atıldığında `Hoşgeldin Devops` statik sayfasına yönlendirme yapılacaktır.
 
+* Localimizde `vagrant ssh case2` komutunu çalıştırarak sunucuya bağlanabilir ve değişiklikleri görebiliriz.
 
 #### Case 2 Aşamaları
 
