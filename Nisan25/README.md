@@ -80,6 +80,7 @@ $ flask run -h 0.0.0.0
 ```
 $ http://192.168.135.113:5000/add_node?ip=172.17.0.3&username=Administrator&password=password&services=kv,n1ql
 ```
+* Not: Host Containeri ilk defa ayağa kalktığında localhost ile çalışmaya başlıyor ve node ekleme işlemi yapıldığında önce kendi IP Adresini 172 ile başlayan bir adrese güncelliyor. Bu durumda yukarıdaki komutu çalıştırdığımızda hata verebilir. Host makinesi IP Adresini güncelleyip yeniden ayağa kalktığında yukarıdaki komutu bir daha çalıştırmamız gerekmekte.
 
 * `/rebalance` ile beraber rebalance işlemi başlatabiliriz.
 
