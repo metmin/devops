@@ -1,0 +1,34 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.define "db" do |h|
+
+    h.vm.provider :virtualbox do |vb|
+      vb.memory = 8096
+      vb.cpus = 4
+    end
+
+    h.vm.box = "centos/7"
+    h.vm.hostname = "db"
+    h.vm.network "private_network", ip: "192.168.135.112"
+    h.vm.network "forwarded_port", guest: 22, host: "2202", id: "ssh"
+
+    h.vm.provision :shell, inline: 'test -e /usr/bin/python3 || (yum install -y python3 ; pip3 install --upgrade pip)'
+    
+    h.vm.provision "shell" do |provision|
+      provision.path = "docker_install.sh"
+    end 
+  
+  end
+  
+  config.vm.define "api" do |h|
+
+    h.vm.box = "centos/7"
+    h.vm.hostname = "api"
+    h.vm.network "private_network", ip: "192.168.135.113"
+    h.vm.network "forwarded_port", guest: 22, host: "2203", id: "ssh"
+  
+  end
+
+
+
+end
